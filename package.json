@@ -1,0 +1,12 @@
+{
+  "name": "shopsphere",
+  "version": "1.0.0",
+  "description": "ShopSphere — Enterprise Modern MERN E-Commerce Platform",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "seed": "cd backend && npm run seed"
+  }
+}

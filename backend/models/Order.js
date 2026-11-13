@@ -1,0 +1,99 @@
+const mongoose = require('mongoose');
+
+const orderItemSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  qty: { type: Number, required: true, min: 1 },
+  image: { type: String, required: true },
+  price: { type: Number, required: true },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true,
+  },
+});
+
+const shippingAddressSchema = new mongoose.Schema({
+  fullName: { type: String, required: true },
+  phone: { type: String, required: true },
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  country: { type: String, required: true, default: 'United States' },
+});
+
+const orderSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    orderItems: [orderItemSchema],
+    shippingAddress: shippingAddressSchema,
+    paymentMethod: {
+      type: String,
+      required: true,
+      enum: ['Razorpay', 'COD'],
+      default: 'COD',
+    },
+    paymentResult: {
+      id: { type: String },
+      status: { type: String },
+      update_time: { type: String },
+      email_address: { type: String },
+      razorpay_payment_id: { type: String },
+      razorpay_order_id: { type: String },
+      razorpay_signature: { type: String },
+    },
+    itemsPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    taxPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    shippingPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+      default: 0.0,
+    },
+    isPaid: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    paidAt: {
+      type: Date,
+    },
+    orderStatus: {
+      type: String,
+      required: true,
+      enum: ['Processing', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'],
+      default: 'Processing',
+    },
+    deliveredAt: {
+      type: Date,
+    },
+    statusHistory: [
+      {
+        status: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now },
+        note: { type: String, default: '' },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model('Order', orderSchema);
